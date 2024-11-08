@@ -1,7 +1,7 @@
 
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   JAI FISCHER / COMP 272 001
  *
  *   This java file contains the problem solutions for the methods lastBoulder,
  *   showDuplicates, and pair methods. You should utilize the Java Collection
@@ -9,6 +9,7 @@
  *
  ********************************************************************/
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.PriorityQueue;
 
@@ -68,7 +69,18 @@ public class ProblemSolutions {
       //
       // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME / SECTION # ABOVE
       //
-      return -1;
+      if(boulders.length < 1) return 0;
+      Comparator<Integer> dec = (o1, o2) -> {
+          if(Objects.equals(o1, o2)) return 0;
+          return o1 > o2 ? -1 : 1;
+      };
+      PriorityQueue<Integer> bldrs = new PriorityQueue<>(dec);
+      for(int i : boulders) bldrs.add(i);
+      while(bldrs.size() > 1){
+          int tmp = bldrs.poll();
+          bldrs.add(Math.abs(tmp-bldrs.poll()));
+      }
+      return bldrs.peek();
   }
 
 
@@ -94,8 +106,14 @@ public class ProblemSolutions {
         //
         //  YOUR CODE GOES HERE
         //
-        return new ArrayList<>();  // Make sure result is sorted in ascending order
-
+        Comparator<String> ascending = String::compareTo;
+        PriorityQueue<String> s = new PriorityQueue<>(ascending);
+        ArrayList<String> dupes = new ArrayList<>(input);
+        for(String i : input) {
+            dupes.remove(i);
+            if(!s.contains(i) && dupes.contains(i)) s.add(i);
+        }
+        return new ArrayList<>(s);  // Make sure result is sorted in ascending order
     }
 
 
@@ -134,6 +152,16 @@ public class ProblemSolutions {
         //
         //  YOUR CODE GOES HERE
         //
-        return new ArrayList<>();  // Make sure returned lists is sorted as indicated above
+        Set<Integer> s = new HashSet<>();
+        for(int i : input) s.add(i);
+        ArrayList<String> pairs = new ArrayList<>();
+        for(int i : input) {
+            if(s.remove(k-i)){
+                pairs.add("(" + i + ", " + (k-i) + ")");
+                s.remove(i);
+            }
+        }
+        Collections.sort(pairs);
+        return pairs;  // Make sure returned lists is sorted as indicated above
     }
 }
